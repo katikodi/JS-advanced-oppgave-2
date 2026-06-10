@@ -1,0 +1,187 @@
+/* ------ */
+/* GLOBAL */
+/* ------ */
+:root {
+    --light: #dfe5e8;
+    --accent: #7fc1db;
+    --medium: #3e315f;
+    --dark: #233361;
+    --darker: #26272f;
+    --darkest: #1a1a1a;
+    --red: #9c2131;
+    --radius: 15px;
+}
+body {
+    background-color: var(--darkest);
+    color: var(--light);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 25px 50px;
+}
+a {
+    color: var(--accent);
+    text-decoration: none;
+}
+h3 {
+    margin: 10px 0;
+}
+
+/* ----------- */
+/* FORM/HEADER */
+/* ----------- */
+#header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+input {
+    margin: 5px;
+}
+#reset-btn {
+    background-color: var(--red);
+    border: none;
+    border-radius: 5px;
+    color: var(--light);
+    padding: 5px;
+}
+#add-title, #add-url {
+    width: 43ch;
+    height: 1.4em;
+    border-radius: 5px;
+    border: none;
+}
+#add-title:focus, #add-url:focus {
+    outline: 1px solid var(--accent);
+    border: none;
+}
+
+/* -------------------- */
+/* SORTING & FILTER BAR */
+/* -------------------- */
+div#all-selections {
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--darker);
+    padding: 10px 15px;
+    border-radius: var(--radius);
+}
+select#sorting-options {
+    margin-right: 50px;
+}
+#filter-label {
+    margin: 0 20px;
+}
+.filter-checkbox {
+    margin-left: 20px;
+}
+
+/* ----------------- */
+/* CARDS + CONTAINER */
+/* ----------------- */
+#main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 2px solid var(--dark);
+    border-radius: var(--radius);
+    margin: 50px;
+    padding: 20px;
+}
+#movie-card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    margin: 50px 20px;
+}
+.movie-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 15px;
+    max-width: 300px;
+    min-width: 180px;
+}
+.movie-title {
+    text-align: center;
+    text-wrap: wrap;
+    overflow-wrap: break-word;
+    max-width: 100%
+}
+.card-manipulation {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+}
+.movie-comment-field {
+    margin: 25px 0 0 0;
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 100%;
+    background-color: var(--darker);
+    text-wrap: wrap;
+    overflow-wrap: break-word;
+}
+
+/* --------------- */
+/* BUTTONS & MODAL */
+/* --------------- */
+#submit-btn {
+    visibility: visible;
+    cursor: pointer;
+    background-color: var(--accent);
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+}
+#submit-btn:hover {
+    filter: drop-shadow(0 0 5px #7fc1db94);
+}
+#submit-btn:active {
+    filter: drop-shadow(0 0 5px #7fc1db94);
+}
+#reset-btn {
+    visibility: visible;
+    cursor: pointer;
+}
+.movie-comment-save-btn {
+    margin: 15px 0 15px 0;
+    max-width: 70%;
+    visibility: hidden;
+    cursor: pointer;
+    background-color: var(--medium);
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    color: var(--light);
+}
+.movie-delete-btn {
+    margin: 20px 0 10px 0;
+    max-width: 70%;
+    cursor: pointer;
+}
+#confirm-div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    font-size: 1.3em;
+}
+#dialog-btns {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+#confirm-btn {
+
+}
+#cancel-btn {
+
+}

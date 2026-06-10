@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Movie List</title>
+    <script src="script.js" defer></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="header">
+        <h1>Movies</h1>
+        <form id="add-movie">
+            <label for="add-title">Add movie title:</label>
+            <input id="add-title" name="movie-title" type="text" required>
+            <br>
+            <label for="add-url">Paste youtube link:</label>
+            <input id="add-url" name="movie-url" type="url" required>
+            <input id="submit-btn" type="submit" value="add movie">
+        </form>
+        <button id="reset-btn">Delete all</button>
+        <dialog id="confirm-dialog">
+            <div id="confirm-div">
+                <p>Are you sure you want to delete everything?</p>
+                <div id="dialog-btns">
+                    <button id="confirm-btn">Yes, delete it all</button>
+                    <button id="cancel-btn">No, cancel</button>
+                </div>
+            </div>
+        </dialog>
+    </div>
+    <div id="main">
+        <div id="all-selections">
+            <span id="sorting-span">
+                <label for="sorting-options">Sort by:</label>
+                
+                <select name="sorting-options" id="sorting-options">
+                    <option value="First added">First added</option>
+                    <option value="Alphabetical">Alphabetical</option>
+                </select>
+            </span>
+            <span id="filters-span">
+                <label id="filter-label">Filter:</label>
+                
+                <input type="checkbox" id="watched-checkbox" class="filter-checkbox">
+                <select name="toggle-watched" id="toggle-watched">
+                    <option value="Watched">Watched</option>
+                    <option value="Not watched">Not watched</option>
+                </select>
+
+                <input type="checkbox" id="commented-checkbox" class="filter-checkbox">
+                <select name="toggle-commented" id="toggle-commented">
+                    <option value="Commented">Commented</option>
+                    <option value="Not commented">Not commented</option>
+                </select>
+            </span>
+        </div>
+        
+        <div id="movie-card-container"></div>
+    </div>
+</body>
+</html>

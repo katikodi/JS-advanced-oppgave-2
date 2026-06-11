@@ -15,14 +15,24 @@ body {
     background-color: var(--darkest);
     color: var(--light);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 25px 50px;
+    margin: 0;
 }
 a {
     color: var(--accent);
     text-decoration: none;
+    margin-bottom: 25px;
 }
-h3 {
-    margin: 10px 0;
+h2 {
+    margin: 25px 0 20px 0;
+}
+label {
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-right: 5px;
+}
+button, input[type="submit"] {
+    cursor: pointer;
+    padding: 5px;
 }
 
 /* ----------- */
@@ -32,22 +42,20 @@ h3 {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    
+    background: linear-gradient(var(--darkest), var(--darker));
+    
+    padding: 25px 50px 15px 50px;
 }
 input {
     margin: 5px;
-}
-#reset-btn {
-    background-color: var(--red);
-    border: none;
-    border-radius: 5px;
-    color: var(--light);
-    padding: 5px;
 }
 #add-title, #add-url {
     width: 43ch;
     height: 1.4em;
     border-radius: 5px;
     border: none;
+    padding: 2px 5px;
 }
 #add-title:focus, #add-url:focus {
     outline: 1px solid var(--accent);
@@ -118,6 +126,12 @@ select#sorting-options {
     align-items: center;
     width: 80%;
 }
+.checkbox-label, .card-checkbox {
+    cursor: pointer;
+    user-select: none;
+    font-size: 1em;
+    accent-color: var(--accent);
+}
 .movie-comment-field {
     margin: 25px 0 0 0;
     padding: 10px;
@@ -128,60 +142,73 @@ select#sorting-options {
     overflow-wrap: break-word;
 }
 
-/* --------------- */
-/* BUTTONS & MODAL */
-/* --------------- */
+/* ------- */
+/* BUTTONS */
+/* ------- */
 #submit-btn {
     visibility: visible;
-    cursor: pointer;
     background-color: var(--accent);
     border: none;
     border-radius: 5px;
-    padding: 5px;
+    cursor: pointer;
+    filter: none;
+    transition: filter 0.12s;
 }
 #submit-btn:hover {
-    filter: drop-shadow(0 0 5px #7fc1db94);
+    filter: drop-shadow(0 0 5px rgba(127, 193, 219, 0.4));
 }
 #submit-btn:active {
-    filter: drop-shadow(0 0 5px #7fc1db94);
+    filter: drop-shadow(0 0 5px rgba(127, 193, 219, 0.4));
 }
-#reset-btn {
-    visibility: visible;
-    cursor: pointer;
+#reset-btn, .movie-delete-btn {
+    background-color: var(--red);
+    border: none;
+    border-radius: 5px;
+    color: var(--light);
 }
 .movie-comment-save-btn {
     margin: 15px 0 15px 0;
+    padding: 5px 10px;
     max-width: 70%;
     visibility: hidden;
-    cursor: pointer;
     background-color: var(--medium);
     border: none;
     border-radius: 5px;
-    padding: 5px;
     color: var(--light);
 }
 .movie-delete-btn {
     margin: 20px 0 10px 0;
     max-width: 70%;
-    cursor: pointer;
 }
-#confirm-div {
+/* ------------ */
+/* DIALOG MODAL */
+/* ------------ */
+#confirm-dialog {
+    border-radius: 5px;
+    background-color: var(--darkest);
+    border: 5px solid var(--red);
+    color: var(--light);
+    padding: 0;
+}
+#confirm-dialog::backdrop {
+    background-color: rgba(6, 6, 11, 0.8);
+}
+#confirm-dialog-content {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     font-weight: 600;
     font-size: 1.3em;
+    padding: 40px 40px 60px 40px;
 }
 #dialog-btns {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    gap: 20px;
+    gap: 80px;
+    margin-top: 40px;
 }
-#confirm-btn {
-
-}
-#cancel-btn {
-
+#confirm-btn, #cancel-btn {
+    padding: 5px 10px;
 }

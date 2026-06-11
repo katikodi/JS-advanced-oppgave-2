@@ -12,15 +12,15 @@
         <h1>Movies</h1>
         <form id="add-movie">
             <label for="add-title">Add movie title:</label>
-            <input id="add-title" name="movie-title" type="text" required>
+            <input id="add-title" name="movie-title-input" type="text" required>
             <br>
-            <label for="add-url">Paste youtube link:</label>
-            <input id="add-url" name="movie-url" type="url" required>
-            <input id="submit-btn" type="submit" value="add movie">
+            <label for="add-url">Paste link:</label>
+            <input id="add-url" name="movie-url-input" type="url" required>
+            <input id="submit-btn" type="submit" value="Add movie">
         </form>
         <button id="reset-btn">Delete all</button>
         <dialog id="confirm-dialog">
-            <div id="confirm-div">
+            <div id="confirm-dialog-content">
                 <p>Are you sure you want to delete everything?</p>
                 <div id="dialog-btns">
                     <button id="confirm-btn">Yes, delete it all</button>

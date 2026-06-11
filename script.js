@@ -11,21 +11,30 @@ const confirmBtn = document.getElementById('confirm-btn');
 
 const movies = JSON.parse(localStorage.getItem('movies')) || [];                // the array where movieobject is pushed
 
-deleteBtn.addEventListener('click', () => confirmModal.showModal());
+deleteBtn.addEventListener('click', () => confirmModal.showModal());            // delete everything modal
 cancelBtn.addEventListener('click', () => confirmModal.close());
 confirmBtn.addEventListener('click', () => {
     movieCardContainer.replaceChildren();
     movies.length = 0;
     localStorage.clear();
     confirmModal.close();
-})
+});
+confirmModal.addEventListener('click', (e) => {
+    if (e.target === confirmModal) confirmModal.close();
+});
 
 movieForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const formData = new FormData(movieForm);
+    const titleInput = formData.get('movie-title-input');
+    if (!titleInput.trim()) {
+        e.preventDefault();                                     // stop!!!!!!!!!!!!
+    };
+
     const movieObject = {
         title: formData.get('movie-title'),
         url: formData.get('movie-url'),
+        watched: false,
         comment: ""
     };
     movies.push(movieObject);                                           // push object to our storage array
@@ -41,7 +50,7 @@ const buildPage = () => {
         const movieCard = document.createElement('div')
         movieCard.className = "movie-card";
 
-        const cardTitle = document.createElement('h3');         // movie title element
+        const cardTitle = document.createElement('h2');         // movie title element
         cardTitle.className = "movie-title"
         cardTitle.textContent = movie.title;
         const cardUrl = document.createElement('a')             // anchor tag (link) element
@@ -51,6 +60,21 @@ const buildPage = () => {
 
         const cardManipulation = document.createElement('div');         // div element for the interactive parts below
         cardManipulation.className = "card-manipulation";
+        //--
+
+        const cardCheckboxRow = document.createElement('div');          // watched checkbox element
+        const cardCheckBox = document.createElement('input');
+        cardCheckBox.className = "card-checkbox";
+        cardCheckBox.type = "checkbox";
+        const cardCheckboxLabel = document.createElement('label');
+        cardCheckboxLabel.className = "checkbox-label";
+        cardCheckboxLabel.textContent = "Finished watching";
+        cardCheckboxLabel.prepend(cardCheckBox);
+
+        cardCheckboxLabel.addEventListener('click', () => {
+            // hm....
+        })
+        //--
 
         const cardComment = document.createElement('p');                // element for comment field
         cardComment.contentEditable = "true";
@@ -58,9 +82,8 @@ const buildPage = () => {
         cardComment.className = "movie-comment-field";
         cardComment.textContent = movie.comment || "Click to add your thoughts";
 
-        function updateComment() {                                                      // self explanatory function
+        function updateComment() {                                                      // comment function
             movies[index].comment = cardComment.textContent;
-            movie.comment = cardComment.textContent;
             localStorage.setItem('movies', JSON.stringify(movies));
         }
 
@@ -92,18 +115,18 @@ const buildPage = () => {
                 event.target.blur();
             }
         })
+        //--
 
         const cardDeleteBtn = document.createElement('button');         // element for movie card delete button
         cardDeleteBtn.className = "movie-delete-btn";
         cardDeleteBtn.textContent = "Delete";
         cardDeleteBtn.addEventListener('click', () => {
-
             movieCard.remove();
             movies.splice(index, 1);
             localStorage.setItem('movies', JSON.stringify(movies));
         })
 
-        cardManipulation.append(cardComment, cardCommentSaveBtn, cardDeleteBtn)
+        cardManipulation.append(cardCheckboxLabel, cardComment, cardCommentSaveBtn, cardDeleteBtn)
         movieCard.append(cardTitle, cardUrl, cardManipulation);
         movieCardContainer.append(movieCard);
     });
@@ -115,17 +138,6 @@ buildPage();
 
 
 
-// example
-// -------
-/*
-const movieObject = {
-    title: "Ivan Vasilyevich Changes Occupation",
-    url: "https://www.youtube.com/watch?v=TQ8onQu5QKY",
-};
-movies.push(movieObject);
-localStorage.setItem("movies", JSON.stringify(movieObject));
-*/
-// -------
 
 
 

@@ -1,18 +1,31 @@
-// 1. add sortering og filtrering funksjonalitet -> først filtrering, så sortering I think
-// 2. fix styling on modal buttons and all delete button hover visuals
 
+// 1. gjør ferdig mulighet for endring av tittel !!!
+// 2. ekstra: custom filter dropdown med clear filters knapp
+
+// movie card related variables:
 const movieCardContainer = document.getElementById('movie-card-container');
 const movieForm = document.getElementById('add-movie');
 const deleteBtn = document.getElementById('reset-btn');
+// modal related variables:
 const confirmModal = document.getElementById('confirm-dialog');
 const cancelBtn = document.getElementById('cancel-btn');
 const confirmBtn = document.getElementById('confirm-btn');
+// filter related variables:
 const filterWatchedCheck = document.getElementById('watched-checkbox');
 const filterCommentedCheck = document.getElementById('commented-checkbox');
 const filterWatchedSelect = document.getElementById('toggle-watched');
 const filterCommentedSelect = document.getElementById('toggle-commented');
+// sorting related variables:
+const alphabeticalBtn = document.getElementById('alphabetical');
+const chronologicalBtn = document.getElementById('chronological');
 
-const movies = JSON.parse(localStorage.getItem('movies')) || [];                // the array where movieobject is pushed
+let sortingObject = {
+    sortingType: 'chrono',
+    isAscending: false       // <- default sorting shows newest added first
+};
+
+const movies = JSON.parse(localStorage.getItem('movies')) || [];                // the array where movieObject is pushed
+// -----------
 
 deleteBtn.addEventListener('click', () => confirmModal.showModal());            // delete everything modal
 cancelBtn.addEventListener('click', () => confirmModal.close());
@@ -26,7 +39,9 @@ confirmModal.addEventListener('click', (e) => {
     if (e.target === confirmModal) confirmModal.close();
 });
 
-movieForm.addEventListener('submit', (e) => {
+//----------------------------------------------------------------------------------------------------------------------------
+
+movieForm.addEventListener('submit', (e) => {                                   // movie submission event
     e.preventDefault();
 
     const formData = new FormData(movieForm);
@@ -44,8 +59,8 @@ movieForm.addEventListener('submit', (e) => {
             titleInputField.classList.add('input-error-fade');
         }, 1000);                                                       // it stays for 1 second
         setTimeout(() => {
-            titleInputField.value = "";
             titleInputField.classList.remove('input-error-fade');
+            titleInputField.value = "";
             titleInputField.contentEditable = true;
         }, 1200);                                                       // it fades for a little longer than 1s
 
@@ -53,6 +68,7 @@ movieForm.addEventListener('submit', (e) => {
     };
 
     const movieObject = {
+        id: Date.now(),
         title: formData.get('movie-title-input'),
         url: formData.get('movie-url-input'),
         watched: false,
@@ -62,53 +78,80 @@ movieForm.addEventListener('submit', (e) => {
     localStorage.setItem('movies', JSON.stringify(movies));             // tells localstorage to save that array's content
     buildPage();
     movieForm.blur();
-})
+});
+
+//----------------------------------------------------------------------------------------------------------------------------
 
 const buildPage = () => {
     movieCardContainer.replaceChildren();
 
-    const displayList = movies.filter((movie, index) => {
-
-        console.log(`\nTesting movie [${index}]:`, movie.title);
-
+    const filteredList = movies.filter((movie) => {                         // filtering functionality
         if (filterWatchedCheck.checked) {
-            const isWatchedSelected = filterWatchedSelect.value === "Watched";
-            if (movie.watched !== isWatchedSelected) {
+            const isWatchedSelected = filterWatchedSelect.value === "Watched";  // boolean checking if option is "Watched"
+            if (movie.watched !== isWatchedSelected) {      // <- return false if the 2 booleans don't match
                 return false;
         }}
-
         if (filterCommentedCheck.checked) {
+            // if comment has value, also after trim, and value is not placeholder, hasComment is true. !!(forced boolean)
             const hasComment = !!(movie.comment && movie.comment.trim() !== "" && movie.comment !== "Click to comment");
-            const isCommentedSelected = filterCommentedSelect.value === "Commented";
-            if (hasComment !== isCommentedSelected) {
+            const isCommentedSelected = filterCommentedSelect.value === "Commented";    // boolean checking for "Commented"
+            if (hasComment !== isCommentedSelected) {       // <- return false if the 2 booleans don't match
                 return false;
         }}
-
-        return true;
+        return true;        // <- only show what wasn't filtered out as false
     });
 
+    //--------------------------------------------------------------
 
-    displayList.forEach((movie, index) => {                          // looping over the storage array
-        const movieCard = document.createElement('div')
+    const { sortingType, isAscending } = sortingObject;
+
+    const displayList = filteredList.toSorted((a, b) => {                   // sorting functionality
+        if (sortingType === 'alpha') {
+            const movieA = a.title.toLowerCase();
+            const movieB = b.title.toLowerCase();
+
+            // considering movieA. if less than B, place it before (-1) B when sorting is set to ascend
+            if (movieA < movieB) return isAscending ? -1 : 1;
+            if (movieA > movieB) return isAscending ? 1 : -1;
+            return 0;
+        }
+        if (sortingType === 'chrono') {
+            // a - b will be -1 if ascending from oldest to newest added
+            return isAscending ? a.id - b.id : b.id - a.id;
+        }
+    })
+
+    //--------------------------------------------------------------
+
+    displayList.forEach((movieToDisplay) => {                   // looping over filtered and sorted storage array
+        const movieCard = document.createElement('div');
         movieCard.className = "movie-card";
 
         const cardTitle = document.createElement('h2');         // movie title element
         cardTitle.className = "movie-title"
-        cardTitle.textContent = movie.title;
+        cardTitle.textContent = movieToDisplay.title;
+        cardTitle.contentEditable = true;
+        cardTitle.spellcheck = false;
+
+        cardTitle.addEventListener('focus', () => {
+            cardTitle.style.outline = '1px solid var(--accent)';
+
+        })
+
         const cardUrl = document.createElement('a')             // anchor tag (link) element
-        cardUrl.href = movie.url;
+        cardUrl.href = movieToDisplay.url;
         cardUrl.target = "_blank";
         cardUrl.textContent = "> Click to watch <";
 
         const cardManipulation = document.createElement('div');         // div element for the interactive parts below
         cardManipulation.className = "card-manipulation";
-        //--
+        //--------------------------------------------------------------
 
         const cardCheckBox = document.createElement('input');           // watched checkbox element
         cardCheckBox.className = "card-checkbox";
         cardCheckBox.type = "checkbox";
-        cardCheckBox.checked = movie.watched;       // <- keeps visual checkmark on refresh if boolean is true
-        movieCard.classList.toggle('watched-style', movie.watched);
+        cardCheckBox.checked = movieToDisplay.watched;       // <- keeps visual checkmark on refresh if boolean is true (???????????)
+        movieCard.classList.toggle('watched-style', movieToDisplay.watched);
 
         const cardCheckboxLabel = document.createElement('label');
         cardCheckboxLabel.className = "checkbox-label";
@@ -116,23 +159,31 @@ const buildPage = () => {
         cardCheckboxLabel.prepend(cardCheckBox);
 
         cardCheckBox.addEventListener('change', () => {     // <- swaps card styling on checkbox toggle
-            movie.watched = cardCheckBox.checked;
-            movieCard.classList.toggle('watched-style', movie.watched);
-            movieCard.querySelector('a').classList.toggle('watched-style', movie.watched);
+            
+            movieToDisplay.watched = cardCheckBox.checked;  // <- matches movieobject watched value to checkbox value
+
+            const movieIndex = movies.findIndex(m => m.id === movieToDisplay.id);
+            movies[movieIndex].watched = cardCheckBox.checked;
+
+            movieCard.classList.toggle('watched-style', movieToDisplay.watched);
+            movieCard.querySelector('a').classList.toggle('watched-style', movieToDisplay.watched);
             localStorage.setItem('movies', JSON.stringify(movies));
         })
-        //--
+        //--------------------------------------------------------------
 
         const cardComment = document.createElement('p');                // element for comment field
-        cardComment.contentEditable = "true";
+        cardComment.contentEditable = true;
         cardComment.spellcheck = false;
         cardComment.className = "movie-comment-field";
-        cardComment.textContent = movie.comment || "Click to comment";
+        cardComment.textContent = movieToDisplay.comment || "Click to comment";
 
         function updateComment() {                                                      // comment function
-            movie.comment = cardComment.textContent;
-            buildPage();
-            localStorage.setItem('movies', JSON.stringify(movies));
+            const movieInstance = movies.find(m => m.id === movieToDisplay.id);
+        
+            if (movieInstance) {
+                movieInstance.comment = cardComment.textContent;
+                localStorage.setItem('movies', JSON.stringify(movies));
+            }
         }
 
         const cardCommentSaveBtn = document.createElement('button');                    // comment save button
@@ -158,20 +209,26 @@ const buildPage = () => {
         })
         cardComment.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
-                event.preventDefault()          // prevents line break
+                event.preventDefault()          // <- prevents line break
                 updateComment();
                 event.target.blur();
             }
         })
-        //--
+        //--------------------------------------------------------------
 
         const cardDeleteBtn = document.createElement('button');         // element for movie card delete button
         cardDeleteBtn.className = "movie-delete-btn";
         cardDeleteBtn.textContent = "Delete";
         cardDeleteBtn.addEventListener('click', () => {
+
+            const movieIndex = movies.findIndex(m => m.id === movieToDisplay.id);
+        
             movieCard.remove();
-            movies.splice(index, 1);
-            localStorage.setItem('movies', JSON.stringify(movies));
+
+            if (movieIndex !== -1) {
+                movies.splice(movieIndex, 1);
+                localStorage.setItem('movies', JSON.stringify(movies));
+            }
         })
 
         cardManipulation.append(cardCheckboxLabel, cardComment, cardCommentSaveBtn, cardDeleteBtn)
@@ -180,8 +237,52 @@ const buildPage = () => {
     });
 }
 
+//----------------------------------------------------------------------------------------------------------------------------
+
 [filterWatchedCheck, filterWatchedSelect, filterCommentedCheck, filterCommentedSelect].forEach((element) => {
     element.addEventListener('change', buildPage);
 });
 
+const updateSortingButtons = () => {
+    const { sortingType, isAscending } = sortingObject;     // destructures and grabs current sortingObject keys/values
+
+    chronologicalBtn.classList.toggle('active-sort', sortingType === 'chrono');
+    alphabeticalBtn.classList.toggle('active-sort', sortingType === 'alpha');
+
+    if (sortingType === 'chrono') {
+        chronologicalBtn.textContent = isAscending ? "⮝ First added" : "⮟ Last added";
+    } else {
+        alphabeticalBtn.textContent = isAscending ? "⮝ A-Z" : "⮟ Z-A";
+    }
+}
+
+chronologicalBtn.addEventListener('click', () => {
+    if (sortingObject.sortingType === 'chrono') {
+        sortingObject.isAscending = !sortingObject.isAscending;             // toggles direction if already selected
+    } else {
+        sortingObject.sortingType = 'chrono';                               // if not, swap to it
+        if (chronologicalBtn.textContent === "⮝ First added") {sortingObject.isAscending = true}
+        if (chronologicalBtn.textContent === "⮟ Last added") {sortingObject.isAscending = false}
+    }
+    updateSortingButtons();
+    buildPage();
+});
+
+alphabeticalBtn.addEventListener('click', () => {
+    if (sortingObject.sortingType === 'alpha') {
+        sortingObject.isAscending = !sortingObject.isAscending;
+    } else {
+        sortingObject.sortingType = 'alpha';
+        if (alphabeticalBtn.textContent === "⮝ A-Z") {sortingObject.isAscending = true}
+        if (alphabeticalBtn.textContent === "⮟ Z-A") {sortingObject.isAscending = false}
+    }
+    updateSortingButtons();
+    buildPage();
+});
+
 buildPage();
+
+// ⮟ Last added (descending NEWEST)     <- chronoDescend
+// ⮝ Alphabetical (ascending A-Z)       <- alphaAscend
+// ⮝ First added (ascending OLDEST)     <- chronoAscend
+// ⮟ Alphabetical (descending Z-A)      <- alphaDescend

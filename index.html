@@ -22,7 +22,7 @@
         <dialog id="confirm-dialog">
             <div id="confirm-dialog-content">
                 <p style="margin: 20px 0 0 0;">Are you sure you want to delete everything?</p>
-                <p style="margin: 0;"><em>(this includes currently hidden movies)</em></p>
+                <p style="margin: 0;"><em>(this includes movies hidden by filters)</em></p>
                 <div id="dialog-btns">
                     <button id="cancel-btn">No, cancel</button>
                     <button id="confirm-btn">Yes, delete it all</button>
@@ -33,13 +33,11 @@
     <div id="main">
         <div id="all-selections">
             <span id="sorting-span">
-                <label for="sorting-options">Sort by:</label>
-                
-                <select name="sorting-options" id="sorting-options">
-                    <option value="First added">First added</option>
-                    <option value="Alphabetical">Alphabetical</option>
-                </select>
+                <label>Sort by:</label>
+                <button class="sort-btn active-sort" id="chronological">⮟ Last added</button>
+                <button class="sort-btn" id="alphabetical">⮝ A-Z</button>
             </span>
+
             <span id="filters-span">
                 <label id="filter-label">Filter:</label>
                 
@@ -51,12 +49,11 @@
 
                 <input type="checkbox" id="commented-checkbox" class="filter-checkbox">
                 <select name="toggle-commented" id="toggle-commented">
-                    <option value="Commented">Commented</option>
-                    <option value="Not commented">Not commented</option>
+                    <option>Commented</option>
+                    <option>Not commented</option>
                 </select>
             </span>
         </div>
-        
         <div id="movie-card-container"></div>
     </div>
 </body>

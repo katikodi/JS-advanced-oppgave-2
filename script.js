@@ -1,6 +1,7 @@
 
-// 1. gjør ferdig mulighet for endring av tittel !!!
+// 1. gjør ferdig mulighet for endring av tittel !!!                    <- så å si ferdig, må se over text update functions og relaterte ting
 // 2. ekstra: custom filter dropdown med clear filters knapp
+// 3. ekstra: card delete button only visible when card is hovered
 
 // movie card related variables:
 const movieCardContainer = document.getElementById('movie-card-container');
@@ -133,10 +134,33 @@ const buildPage = () => {
         cardTitle.contentEditable = true;
         cardTitle.spellcheck = false;
 
-        cardTitle.addEventListener('focus', () => {
-            cardTitle.style.outline = '1px solid var(--accent)';
+        function updateTitle() {                                                    // title edit function
+            const movieInstance = movies.find(m => m.id === movieToDisplay.id);
+        
+            if (movieInstance) {
+                movieInstance.title = cardTitle.textContent;
+                localStorage.setItem('movies', JSON.stringify(movies));
+                buildPage();
+            }
+        }
 
+        cardTitle.addEventListener('focus', () => {                         // style change when editing title
+            cardTitle.style.outline = '1px solid var(--accent)';
+            cardTitle.style.borderRadius = 'var(--radius)';
         })
+        cardTitle.addEventListener('blur', () => {                          // on element blur (exit),
+            cardTitle.style.outline = 'none';                               // remove style change, and
+            if (cardTitle && cardTitle.textContent.trim() !== "") {         // update if there is content
+                updateTitle();
+            }
+        })
+        cardTitle.addEventListener('keydown', (event) => {                  // exits (thus saves) on enter click
+            if (event.key === 'Enter') {
+                event.preventDefault()          // <- prevents line break
+                event.target.blur();
+            }
+        })
+        //--------------------------------------------------------------
 
         const cardUrl = document.createElement('a')             // anchor tag (link) element
         cardUrl.href = movieToDisplay.url;
@@ -150,22 +174,22 @@ const buildPage = () => {
         const cardCheckBox = document.createElement('input');           // watched checkbox element
         cardCheckBox.className = "card-checkbox";
         cardCheckBox.type = "checkbox";
-        cardCheckBox.checked = movieToDisplay.watched;       // <- keeps visual checkmark on refresh if boolean is true (???????????)
-        movieCard.classList.toggle('watched-style', movieToDisplay.watched);
+        cardCheckBox.checked = movieToDisplay.watched;  // <- keeps visual checkmark on refresh if boolean is true
+        movieCard.classList.toggle('watched-style', movieToDisplay.watched);    // adds style-class only on true
 
         const cardCheckboxLabel = document.createElement('label');
         cardCheckboxLabel.className = "checkbox-label";
         cardCheckboxLabel.textContent = "Finished watching";
         cardCheckboxLabel.prepend(cardCheckBox);
 
-        cardCheckBox.addEventListener('change', () => {     // <- swaps card styling on checkbox toggle
+        cardCheckBox.addEventListener('change', () => {     // on checkbox toggle:
             
-            movieToDisplay.watched = cardCheckBox.checked;  // <- matches movieobject watched value to checkbox value
+            movieToDisplay.watched = cardCheckBox.checked;  // <- matches filtered movieobject watched value to checkbox value
 
             const movieIndex = movies.findIndex(m => m.id === movieToDisplay.id);
-            movies[movieIndex].watched = cardCheckBox.checked;
+            movies[movieIndex].watched = cardCheckBox.checked;  // <- matches original movieobject watched value to checkbox value
 
-            movieCard.classList.toggle('watched-style', movieToDisplay.watched);
+            movieCard.classList.toggle('watched-style', movieToDisplay.watched); // <- swaps card styling
             movieCard.querySelector('a').classList.toggle('watched-style', movieToDisplay.watched);
             localStorage.setItem('movies', JSON.stringify(movies));
         })
@@ -189,7 +213,7 @@ const buildPage = () => {
         const cardCommentSaveBtn = document.createElement('button');                    // comment save button
         cardCommentSaveBtn.className = "movie-comment-save-btn";
         cardCommentSaveBtn.textContent = "Save comment";
-        cardCommentSaveBtn.addEventListener('click', (event) => {
+        cardCommentSaveBtn.addEventListener('click', () => {
             updateComment();
             cardCommentSaveBtn.blur();
         });
@@ -222,7 +246,7 @@ const buildPage = () => {
         cardDeleteBtn.addEventListener('click', () => {
 
             const movieIndex = movies.findIndex(m => m.id === movieToDisplay.id);
-        
+
             movieCard.remove();
 
             if (movieIndex !== -1) {

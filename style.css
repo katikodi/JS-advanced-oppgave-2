@@ -162,7 +162,8 @@ span {
     text-align: center;
     text-wrap: wrap;
     overflow-wrap: break-word;
-    max-width: 100%
+    max-width: 100%;
+    padding: 10px;
 }
 .card-manipulation {
     display: flex;

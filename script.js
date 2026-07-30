@@ -1,7 +1,7 @@
 
 // 1. gjør ferdig mulighet for endring av tittel !!!                    <- så å si ferdig, må se over text update functions og relaterte ting
 // 2. ekstra: custom filter dropdown med clear filters knapp
-// 3. ekstra: card delete button only visible when card is hovered
+// 3. ekstra: card delete button only visible when card is hovered      <- FERDIG
 
 // movie card related variables:
 const movieCardContainer = document.getElementById('movie-card-container');
@@ -12,13 +12,27 @@ const confirmModal = document.getElementById('confirm-dialog');
 const cancelBtn = document.getElementById('cancel-btn');
 const confirmBtn = document.getElementById('confirm-btn');
 // filter related variables:
+const filterWatched = document.getElementById('watched');
+const filterNotWatched = document.getElementById('not-watched');
+const filterCommented = document.getElementById('commented');
+const filterNoComment = document.getElementById('no-comment');
+const dropdownBtn = document.getElementById('dropdown-btn');
+/*
 const filterWatchedCheck = document.getElementById('watched-checkbox');
 const filterCommentedCheck = document.getElementById('commented-checkbox');
 const filterWatchedSelect = document.getElementById('toggle-watched');
 const filterCommentedSelect = document.getElementById('toggle-commented');
+*/
 // sorting related variables:
 const alphabeticalBtn = document.getElementById('alphabetical');
 const chronologicalBtn = document.getElementById('chronological');
+
+let filterObject = {
+    watchFilter: false,
+    isWatchFilterActive: false,
+    commentFilter: false,
+    isCommentFilterActive: false
+};
 
 let sortingObject = {
     sortingType: 'chrono',
@@ -39,6 +53,8 @@ confirmBtn.addEventListener('click', () => {
 confirmModal.addEventListener('click', (e) => {
     if (e.target === confirmModal) confirmModal.close();
 });
+//----------------------------------------------------------------------------------------------------------------------------
+
 
 //----------------------------------------------------------------------------------------------------------------------------
 
@@ -85,7 +101,7 @@ movieForm.addEventListener('submit', (e) => {                                   
 
 const buildPage = () => {
     movieCardContainer.replaceChildren();
-
+/*
     const filteredList = movies.filter((movie) => {                         // filtering functionality
         if (filterWatchedCheck.checked) {
             const isWatchedSelected = filterWatchedSelect.value === "Watched";  // boolean checking if option is "Watched"
@@ -101,6 +117,23 @@ const buildPage = () => {
         }}
         return true;        // <- only show what wasn't filtered out as false
     });
+*/
+    const filteredList = movies.filter((movie) => {
+        if (filterObject.isWatchFilterActive) {
+            const isWatchedSelected = filterObject.watchFilter;
+            if (movie.watched !== isWatchedSelected) {
+                return false;
+            }
+        }
+        if (filterObject.isCommentFilterActive) {
+            const hasComment = !!(movie.comment && movie.comment.trim() !== "" && movie.comment !== "Click to comment");
+            const isCommentedSelected = filterObject.commentFilter;
+            if (hasComment !== isCommentedSelected) {
+                return false;
+            }
+        }
+        return true;
+    })
 
     //--------------------------------------------------------------
 
@@ -183,7 +216,6 @@ const buildPage = () => {
         cardCheckboxLabel.prepend(cardCheckBox);
 
         cardCheckBox.addEventListener('change', () => {     // on checkbox toggle:
-            
             movieToDisplay.watched = cardCheckBox.checked;  // <- matches filtered movieobject watched value to checkbox value
 
             const movieIndex = movies.findIndex(m => m.id === movieToDisplay.id);
@@ -243,8 +275,7 @@ const buildPage = () => {
         const cardDeleteBtn = document.createElement('button');         // element for movie card delete button
         cardDeleteBtn.className = "movie-delete-btn";
         cardDeleteBtn.textContent = "Delete";
-        cardDeleteBtn.addEventListener('click', () => {
-
+        cardDeleteBtn.addEventListener('click', () => {             // <- movie card delete functionality
             const movieIndex = movies.findIndex(m => m.id === movieToDisplay.id);
 
             movieCard.remove();
@@ -253,6 +284,16 @@ const buildPage = () => {
                 movies.splice(movieIndex, 1);
                 localStorage.setItem('movies', JSON.stringify(movies));
             }
+        })
+        movieCard.addEventListener('mouseover', () => {
+            const currentDeleteBtn = movieCard.querySelector('.movie-delete-btn');
+            currentDeleteBtn.style.pointerEvents = 'auto';
+            currentDeleteBtn.style.opacity = '1';
+        })
+        movieCard.addEventListener('mouseleave', () => {
+            const currentDeleteBtn = movieCard.querySelector('.movie-delete-btn');
+            currentDeleteBtn.style.pointerEvents = 'none';
+            currentDeleteBtn.style.opacity = '0';
         })
 
         cardManipulation.append(cardCheckboxLabel, cardComment, cardCommentSaveBtn, cardDeleteBtn)
@@ -263,9 +304,11 @@ const buildPage = () => {
 
 //----------------------------------------------------------------------------------------------------------------------------
 
+/*
 [filterWatchedCheck, filterWatchedSelect, filterCommentedCheck, filterCommentedSelect].forEach((element) => {
     element.addEventListener('change', buildPage);
 });
+*/
 
 const updateSortingButtons = () => {
     const { sortingType, isAscending } = sortingObject;     // destructures and grabs current sortingObject keys/values

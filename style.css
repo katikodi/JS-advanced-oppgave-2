@@ -8,14 +8,15 @@
     --lightpurple: #9781d1;
     --medium: #3e315f;
     --dark: #233361;
-    --darker: #26272f;
-    --darkest: #1a1a1a;
+    --darker: #2b2330;
+    --darkest: #141213;
+    --darkestblue: #101119;
     --red: #9c2131;
     --redhover: #851423;
     --radius: 15px;
 }
 body {
-    background-color: var(--darkest);
+    background-color: var(--darkestblue);
     color: var(--light);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
@@ -96,7 +97,7 @@ select#sorting-options {
 .sort-btn {
     border-radius: var(--radius);
     margin: 0 5px;
-    padding: 4px 10px;
+    padding: 6px 12px;
     border: none;
 }
 .active-sort {
@@ -107,6 +108,80 @@ span {
     align-items: center;
     gap: 5px;
 }
+
+.dropdown-container {
+    position: relative;
+    width: 135px;
+}
+.dropdown-container ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.dropdown-btn {
+    width: 100%;
+    padding: 4px 14px;
+    background-color: var(--light);
+    border: none;
+    border-radius: 12px;
+    font-size: 1em;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.arrow {
+    display: inline-block;
+    padding: 3px;
+    transform: rotate(0deg);
+    transition: transform 0.3s ease;
+}
+.dropdown-container:hover .arrow {
+    transform: rotate(180deg);
+}
+
+.dropdown-items {   /* controls entire menu */
+    position: absolute;
+    top: 105%;
+    left: 0;
+    width: 100%;
+    background-color: var(--light);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+    z-index: 10;
+    overflow: hidden;
+}
+.dropdown-container:hover .dropdown-items {     /* shows menu on container hoverv*/
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-items li button {     /* controls individual menu items */
+    width: 100%;
+    padding: 12px 16px;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    background-color: var(--light);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+.dropdown-items li button:hover {
+    background-color: var(--accent);
+    color: var(--dark);
+}
+
+
+
+
+/*
 #filter-label {
     margin: 0 20px;
 }
@@ -117,6 +192,7 @@ span {
     translate: 50% ;
     scale: 1.4;
 }
+*/
 
 /* ----------------- */
 /* CARDS + CONTAINER -------------------------------------------------------------- */
@@ -125,6 +201,7 @@ span {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    background-color: var(--darkest);
     border: 2px solid var(--dark);
     border-radius: var(--radius);
     margin: 50px;
@@ -162,6 +239,7 @@ span {
     text-align: center;
     text-wrap: wrap;
     overflow-wrap: break-word;
+    letter-spacing: 1px;
     max-width: 100%;
     padding: 10px;
 }
@@ -241,6 +319,9 @@ span {
 .movie-delete-btn {
     margin: 20px 0 10px 0;
     max-width: 70%;
+    pointer-events: none;
+    opacity: 0;
+    transition: 0.2s opacity ease, 0.2s pointer-events ease;
 }
 /* ------------ */
 /* DIALOG MODAL -------------------------------------------------------------- */
@@ -262,6 +343,7 @@ span {
     align-items: center;
     font-weight: 600;
     font-size: 1.3em;
+    letter-spacing: 0.5px;
     padding: 40px 40px 60px 40px;
 }
 #dialog-btns {
@@ -270,9 +352,16 @@ span {
     justify-content: space-between;
     align-items: center;
     gap: 80px;
-    margin-top: 40px;
+    margin-top: 50px;
 }
 #confirm-btn, #cancel-btn {
     padding: 5px 10px;
     outline: none;
+}
+em {
+    font-weight: 500;
+    font-size: 0.9em;
+}
+strong {
+    letter-spacing: 1px;
 }

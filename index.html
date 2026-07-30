@@ -21,7 +21,7 @@
         <button id="reset-btn">Delete all</button>
         <dialog id="confirm-dialog">
             <div id="confirm-dialog-content">
-                <p style="margin: 20px 0 0 0;">Are you sure you want to delete everything?</p>
+                <p style="margin: 20px 0 0 0;">Are you sure you want to delete <strong>everything</strong>?</p>
                 <p style="margin: 0;"><em>(this includes movies hidden by filters)</em></p>
                 <div id="dialog-btns">
                     <button id="cancel-btn">No, cancel</button>
@@ -38,6 +38,19 @@
                 <button class="sort-btn" id="alphabetical">⮝ A-Z</button>
             </span>
 
+            <div class="dropdown-container">
+                <button class="dropdown-btn">
+                    Filter<span class="arrow">▼</span>
+                </button>
+                <ul class="dropdown-items">
+                    <li id="watched"><button>Watched</button></li>
+                    <li id="commented"><button>Commented</button></li>
+                    <li id="not-watched"><button>Not watched</button></li>
+                    <li id="no-comment"><button>Not commented</button></li>
+                </ul>
+            </div>
+
+            <!--
             <span id="filters-span">
                 <label id="filter-label">Filter:</label>
                 
@@ -53,6 +66,7 @@
                     <option>Not commented</option>
                 </select>
             </span>
+            -->
         </div>
         <div id="movie-card-container"></div>
     </div>

@@ -2,9 +2,10 @@
 /* GLOBAL */
 /* ------ */
 :root {
-    --light: #dfe5e8;
-    --lesslight: #b4bcbe;
+    --light: #dfe4e8;
+    --lesslight: #c0d8eb;
     --accent: #7fc1db;
+    --lighterpurple: #c7b5f7;
     --lightpurple: #9781d1;
     --medium: #3e315f;
     --dark: #233361;
@@ -95,12 +96,21 @@ select#sorting-options {
     margin-left: 20px;
 }
 .sort-btn {
+    background-color: var(--light);
     border-radius: var(--radius);
     margin: 0 5px;
     padding: 6px 12px;
     border: none;
+    transition: background-color 0.1s ease;
+}
+.sort-btn:hover {
+    background-color: var(--lesslight);
 }
 .active-sort {
+    background: var(--lighterpurple);
+    transition: background 0.1s ease;
+}
+.active-sort:hover {
     background: var(--lightpurple);
 }
 span {
@@ -109,67 +119,135 @@ span {
     gap: 5px;
 }
 
+#all-of-filter-visuals {
+    display: flex;
+    justify-content: flex-end;
+    gap: 30px;
+}
+#active-filter-btns-container {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 20px;
+}
+
+@keyframes slide-in-right {
+    0% {
+        opacity: 0;
+        transform: translateX(20px);
+    } 100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+.remove-active-filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 14px;
+    text-wrap: nowrap;
+    background-color: var(--lighterpurple);
+    border-radius: var(--radius);
+    border: none;
+    overflow: hidden;
+    transition: background-color 0.1s ease;
+    animation: slide-in-right 0.4s ease;
+}
+.remove-active-filter-btn:hover {
+    background-color: var(--lightpurple);
+}
+.filter-x {
+    transform: rotate(45deg);
+    transition: transform 0.25s ease;
+}
+.remove-active-filter-btn:hover .filter-x {
+    transform: rotate(90deg);
+}
+
+.filter-icon-span, .dd-icon-span {
+    position: relative;
+    transform: scale(1.25);
+}
+.filter-icon-span .filter-icon-slash, .dd-icon-span .dd-icon-slash {
+    position: absolute;
+    transform: translateX(50%);
+    color: var(--red);
+    right: 50%;
+    font-weight: 600;
+}
+.dd-icon-solo { /* had to separate this from .dd-icon to not double the upscale */
+    transform: scale(1.25);
+}
+
+/* MORE DROPDOWN RELATED: --------------------------------------- */
+
 .dropdown-container {
     position: relative;
-    width: 135px;
+    width: 170px;
+    flex-shrink: 0;
 }
-.dropdown-container ul {
+.dropdown-container ul { /* removing default list styling */
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-.dropdown-btn {
+.dropdown-btn { /* the top "button" you hover to show the menu */
     width: 100%;
     padding: 4px 14px;
     background-color: var(--light);
     border: none;
-    border-radius: 12px;
+    border-radius: var(--radius);
     font-size: 1em;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.1s ease;
 }
-
 .arrow {
     display: inline-block;
     padding: 3px;
     transform: rotate(0deg);
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, color 0.1s ease;
 }
-.dropdown-container:hover .arrow {
-    transform: rotate(180deg);
-}
-
 .dropdown-items {   /* controls entire menu */
     position: absolute;
     top: 105%;
     left: 0;
     width: 100%;
     background-color: var(--light);
-    border-radius: 12px;
+    border-radius: var(--radius);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     opacity: 0;
-    visibility: hidden;
+    visibility: hidden; /* hidden so hover doesn't trigger on it */
     transform: translateY(-10px);
     transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
     z-index: 10;
     overflow: hidden;
 }
-.dropdown-container:hover .dropdown-items {     /* shows menu on container hoverv*/
+
+.dropdown-container:hover .dropdown-btn {
+    background-color: var(--lesslight);
+}
+.dropdown-container:hover .dropdown-items {     /* shows menu on container hover */
     opacity: 1;
-    visibility: visible;
+    visibility: visible; /* visible so it keeps hover state when moving from top button to menu */
     transform: translateY(0);
 }
+.dropdown-container:hover .arrow {
+    transform: rotate(180deg);
+    color: var(--medium);
+}
 
-.dropdown-items li button {     /* controls individual menu items */
+.dropdown-items li button {     /* controls each individual menu item */
+    display: flex;
+    gap: 10px;
     width: 100%;
     padding: 12px 16px;
     border: none;
     cursor: pointer;
     text-align: left;
+    text-wrap: nowrap;
     background-color: var(--light);
     transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -178,21 +256,6 @@ span {
     color: var(--dark);
 }
 
-
-
-
-/*
-#filter-label {
-    margin: 0 20px;
-}
-.filter-checkbox {
-    margin: 0 15px 0 20px;
-    accent-color: var(--accent);
-    cursor: pointer;
-    translate: 50% ;
-    scale: 1.4;
-}
-*/
 
 /* ----------------- */
 /* CARDS + CONTAINER -------------------------------------------------------------- */
@@ -270,7 +333,7 @@ span {
 /* BUTTONS -------------------------------------------------------------- */
 /* ------- */
 #submit-btn {
-    visibility: visible;
+    letter-spacing: 0.5px;
     background-color: var(--accent);
     border: none;
     border-radius: 5px;
@@ -317,7 +380,7 @@ span {
     color: var(--light);
 }
 .movie-delete-btn {
-    margin: 20px 0 10px 0;
+    margin: 30px 0 5px 0;
     max-width: 70%;
     pointer-events: none;
     opacity: 0;

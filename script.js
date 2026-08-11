@@ -1,6 +1,6 @@
 
 // 1. gjør ferdig mulighet for endring av tittel !!!                    <- så å si ferdig, må se over text update functions og relaterte ting
-// 2. ekstra: custom filter dropdown med clear filters knapp
+// 2. ekstra: custom filter dropdown med clear filters knapp            <- kinda, ferdig men man trykker på hvert filter
 // 3. ekstra: card delete button only visible when card is hovered      <- FERDIG
 
 // movie card related variables:
@@ -12,11 +12,14 @@ const confirmModal = document.getElementById('confirm-dialog');
 const cancelBtn = document.getElementById('cancel-btn');
 const confirmBtn = document.getElementById('confirm-btn');
 // filter related variables:
+const filtersContainer = document.getElementById('active-filter-btns-container');
 const filterWatched = document.getElementById('watched');
 const filterNotWatched = document.getElementById('not-watched');
 const filterCommented = document.getElementById('commented');
 const filterNoComment = document.getElementById('no-comment');
-const dropdownBtn = document.getElementById('dropdown-btn');
+//const dropdownContainer = document.querySelector('.dropdown-container');
+const dropdownItems = document.querySelector('.dropdown-items');
+//const options = document.querySelectorAll('filter');
 /*
 const filterWatchedCheck = document.getElementById('watched-checkbox');
 const filterCommentedCheck = document.getElementById('commented-checkbox');
@@ -28,10 +31,10 @@ const alphabeticalBtn = document.getElementById('alphabetical');
 const chronologicalBtn = document.getElementById('chronological');
 
 let filterObject = {
-    watchFilter: false,
     isWatchFilterActive: false,
-    commentFilter: false,
-    isCommentFilterActive: false
+    filterWatched: false,
+    isCommentFilterActive: false,
+    filterCommented: false
 };
 
 let sortingObject = {
@@ -119,15 +122,17 @@ const buildPage = () => {
     });
 */
     const filteredList = movies.filter((movie) => {
-        if (filterObject.isWatchFilterActive) {
-            const isWatchedSelected = filterObject.watchFilter;
+        const { isWatchFilterActive, filterWatched, isCommentFilterActive, filterCommented } = filterObject;
+        
+        if (isWatchFilterActive) {
+            const isWatchedSelected = filterWatched;
             if (movie.watched !== isWatchedSelected) {
                 return false;
             }
         }
-        if (filterObject.isCommentFilterActive) {
+        if (isCommentFilterActive) {
             const hasComment = !!(movie.comment && movie.comment.trim() !== "" && movie.comment !== "Click to comment");
-            const isCommentedSelected = filterObject.commentFilter;
+            const isCommentedSelected = filterCommented;
             if (hasComment !== isCommentedSelected) {
                 return false;
             }
@@ -242,6 +247,7 @@ const buildPage = () => {
             }
         }
 
+        /*
         const cardCommentSaveBtn = document.createElement('button');                    // comment save button
         cardCommentSaveBtn.className = "movie-comment-save-btn";
         cardCommentSaveBtn.textContent = "Save comment";
@@ -249,17 +255,18 @@ const buildPage = () => {
             updateComment();
             cardCommentSaveBtn.blur();
         });
+        */
 
         cardComment.addEventListener('focus', () => {                                   // comment field eventlisteners
             cardComment.style.outline = '1px solid var(--accent)';
-            cardCommentSaveBtn.style.visibility = 'visible';
+            //cardCommentSaveBtn.style.visibility = 'visible';
             if (cardComment.textContent === "Click to comment")
             {cardComment.textContent = "";}
         })
         cardComment.addEventListener('blur', () => {
             updateComment();
             cardComment.style.outline = 'none';
-            cardCommentSaveBtn.style.visibility = 'hidden';
+            //cardCommentSaveBtn.style.visibility = 'hidden';
             if (cardComment.textContent === "")
             {cardComment.textContent = "Click to comment";}
         })
@@ -296,7 +303,7 @@ const buildPage = () => {
             currentDeleteBtn.style.opacity = '0';
         })
 
-        cardManipulation.append(cardCheckboxLabel, cardComment, cardCommentSaveBtn, cardDeleteBtn)
+        cardManipulation.append(cardCheckboxLabel, cardComment, /*cardCommentSaveBtn,*/ cardDeleteBtn)
         movieCard.append(cardTitle, cardUrl, cardManipulation);
         movieCardContainer.append(movieCard);
     });
@@ -309,6 +316,167 @@ const buildPage = () => {
     element.addEventListener('change', buildPage);
 });
 */
+/*
+[filterWatched, filterCommented, filterNotWatched, filterNoComment].forEach((element) =>  {
+    element.addEventListener('click', () => {
+        element
+        applyFilter
+    })
+})
+*/
+/*
+const applyFilter = (element) => {
+    const { filterWatched, isWatchFilterActive, filterCommented, isCommentFilterActive } = filterObject;
+
+
+    if (element === filterWatched || filterNotWatched) {
+        filterObject.isWatchFilterActive = true;
+        
+    }
+
+    buildPage();
+}
+*/
+
+
+
+dropdownItems.addEventListener('click', (e) => {
+    const filterOption = e.target.closest('.filter');
+
+    // lag visuell slett filterknapp funksjon basert på filterobject values
+    // og endring av filterobject basert på filterknapp fjerna (lage funksjon for det også)
+    // sjekk i loopen om filtre blir applya riktig
+
+    if (!filterOption) return;
+
+    if (filterOption.id === "watched" || filterOption.id === "not-watched") {
+
+        filterObject.isWatchFilterActive = true;    // <- updates filter object that "watched" or "not watched" is selected
+        filterObject.filterWatched = filterOption.id === "watched" ? true : false;      // <- specifies which of them it is
+
+        const type = filterObject.filterWatched === true ? "watched" : "notWatched";
+        const oppositeType = filterObject.filterWatched === false ? "watched" : "notWatched";
+
+        const text = filterObject.filterWatched === true ? "Watched" : "Not watched";
+        const icon = '👁';
+            
+        const hasDuplicateButton = filtersContainer.querySelector(`#${type}Button`) !== null;
+        const hasOppositeButton = filtersContainer.querySelector(`#${oppositeType}Button`) !== null;
+
+        if (hasDuplicateButton) {   // if container has button of same watched state, return nothing
+            console.log("Refused to add a duplicate button");
+            console.log(filterObject);
+            return;
+        }
+        else if (hasOppositeButton) {   // if container has button of opposite watched state, remove it before adding button
+            filtersContainer.querySelector(`#${oppositeType}Button`).remove();
+            addActiveFilterButton(text, type, icon);
+            console.log(`Removed ${oppositeType} filter and added ${type} filter`);
+            console.log(filterObject);
+            return;
+        } else {    // if the button doesn't already exist, kjør addfilterbutton function
+            addActiveFilterButton(text, type, icon);
+            console.log(`Added ${type} filter`);
+            console.log(filterObject);
+            return;
+        }
+        
+
+    } else if (filterOption.id === "commented" || filterOption.id === "no-comment") {
+        
+        filterObject.isCommentFilterActive = true;    // <- updates filter object that "watched" or "not watched" is selected
+        filterObject.filterCommented = filterOption.id === "commented" ? true : false;      // <- specifies which of them it is
+
+        const type = filterObject.filterCommented === true ? "commented" : "notCommented";
+        const oppositeType = filterObject.filterCommented === false ? "commented" : "notCommented";
+
+        const text = filterObject.filterCommented === true ? "Commented" : "Not commented";
+        const icon = '🗩';
+            
+        const hasDuplicateButton = filtersContainer.querySelector(`#${type}Button`) !== null;
+        const hasOppositeButton = filtersContainer.querySelector(`#${oppositeType}Button`) !== null;
+
+        if (hasDuplicateButton) {   // if container has button of same commented state, return nothing
+            console.log("Refused to add a duplicate button");
+            console.log(filterObject);
+            return;
+        }
+        else if (hasOppositeButton) {   // if container has button of opposite watched state, remove it before adding button
+            filtersContainer.querySelector(`#${oppositeType}Button`).remove();
+            addActiveFilterButton(text, type, icon);
+            console.log(`Removed ${oppositeType} filter and added ${type} filter`);
+            console.log(filterObject);
+            return;
+        } else {    // if the button doesn't already exist, kjør addfilterbutton function
+            addActiveFilterButton(text, type, icon);
+            console.log(`Added ${type} filter`);
+            console.log(filterObject);
+            return;
+        }
+    }
+});
+
+const addActiveFilterButton = (text, type, icon) => {
+    console.log("---");
+    const activeFilterButton = document.createElement('button');
+    activeFilterButton.id = `${type}Button`;
+    activeFilterButton.className = "remove-active-filter-btn";
+    //activeFilterButton.textContent = `  ${text}`;
+
+    const xSpan = document.createElement('span');
+    xSpan.className = "filter-x";
+    xSpan.textContent = "✖";
+
+    const iconSpan = document.createElement('span');
+    iconSpan.className = "filter-icon-span";
+    const iconSpanIcon = document.createElement('span');
+    iconSpanIcon.classname = "filter-icon";
+    iconSpanIcon.textContent = icon;
+    const iconSpanSlash = document.createElement('span');
+    iconSpanSlash.className = "filter-icon-slash";
+    iconSpanSlash.textContent = "/";
+
+    if (type === "watched" || type === "commented") {
+        iconSpan.append(iconSpanIcon);
+    } else {
+        iconSpan.append(iconSpanIcon, iconSpanSlash);
+    }
+
+    activeFilterButton.append(xSpan, text, iconSpan);
+    filtersContainer.append(activeFilterButton);
+    buildPage();
+}
+
+
+filtersContainer.addEventListener('click', (e) => {
+    const filterToRemove = e.target.closest(".remove-active-filter-btn");
+
+    if (!filterToRemove) return;
+
+    if (filterToRemove.id === "watchedButton" || filterToRemove.id === "notWatchedButton") {
+        filterObject.isWatchFilterActive = false;
+        removeActiveFilterButton(filterToRemove);
+        console.log(`removed ${filterToRemove}`);
+        console.log(filterObject);
+    } else {
+        filterObject.isCommentFilterActive = false;
+        removeActiveFilterButton(filterToRemove);
+        console.log(`removed ${filterToRemove}`);
+        console.log(filterObject);
+    }
+})
+
+const removeActiveFilterButton = (filter) => {
+    console.log("-----");
+    filter.remove();
+    buildPage();
+}
+
+
+
+
+//----------------------------------------------------------------------------------------------------------------------------
+
 
 const updateSortingButtons = () => {
     const { sortingType, isAscending } = sortingObject;     // destructures and grabs current sortingObject keys/values

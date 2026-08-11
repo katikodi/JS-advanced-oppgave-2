@@ -38,17 +38,28 @@
                 <button class="sort-btn" id="alphabetical">⮝ A-Z</button>
             </span>
 
-            <div class="dropdown-container">
-                <button class="dropdown-btn">
-                    Filter<span class="arrow">▼</span>
-                </button>
-                <ul class="dropdown-items">
-                    <li id="watched"><button>Watched</button></li>
-                    <li id="commented"><button>Commented</button></li>
-                    <li id="not-watched"><button>Not watched</button></li>
-                    <li id="no-comment"><button>Not commented</button></li>
-                </ul>
+            <div id="all-of-filter-visuals">
+                <div id="active-filter-btns-container"></div>
+
+                <div class="dropdown-container">
+                    <button class="dropdown-btn">
+                        Filter<span class="arrow">▼</span>
+                    </button>
+                    <ul class="dropdown-items">
+                        <li id="watched" class="filter"><button><span class="dd-icon-solo">👁</span>Watched</button></li>
+                        <li id="commented" class="filter"><button><span class="dd-icon-solo">🗩</span>Commented</button></li>
+                        <li id="not-watched" class="filter"><button><span class="dd-icon-span">
+                                <span class="dd-icon">👁</span>
+                                <span class="dd-icon-slash">/</span>
+                            </span>Not watched</button></li>
+                        <li id="no-comment" class="filter"><button><span class="dd-icon-span">
+                                <span class="dd-icon">🗩</span>
+                                <span class="dd-icon-slash">/</span>
+                            </span>Not commented</button></li>
+                    </ul>
+                </div>
             </div>
+            
 
             <!--
             <span id="filters-span">
